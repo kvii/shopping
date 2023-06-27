@@ -81,3 +81,14 @@ help:
 	{ lastLine = $$0 }' $(MAKEFILE_LIST)
 
 .DEFAULT_GOAL := help
+
+.PHONY: images
+images: order user
+
+.PHONY: order
+order:
+	docker build -t order:$(VERSION) -f ./app/order/Dockerfile .
+
+.PHONY: user
+user:
+	docker build -t user:$(VERSION) -f ./app/user/Dockerfile .
