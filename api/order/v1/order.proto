@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package api.order.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "shopping/api/order/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.order.v1";
+
+// 订单服务
+service Order {
+  // 创建订单
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderReply) {
+    option (google.api.http) = {
+      post : "/v1/order"
+      body : "*"
+    };
+  }
+
+  // 获取用户 id 对应的订单
+  rpc ListOrderById(ListOrderByIdRequest) returns (ListOrderByIdReply) {
+    option (google.api.http) = {
+      get : "/v1/order"
+    };
+  }
+}
+
+// 创建订单 参数
+message CreateOrderRequest {
+  // 用户 id
+  int64 user_id = 1;
+
+  // 订单名称
+  string order_name = 2;
+}
+
+// 创建订单 响应
+message CreateOrderReply {}
+
+// 获取用户 id 对应的订单 参数
+message ListOrderByIdRequest { int64 user_id = 1; }
+
+// 获取用户 id 对应的订单 响应
+message ListOrderByIdReply {
+  // 订单列表
+  repeated OrderInfo order_list = 1;
+}
+
+message OrderInfo {
+  // 订单 id
+  int64 order_id = 1;
+
+  // 订单名称
+  string order_name = 2;
+}

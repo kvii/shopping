@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package api.user.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "shopping/api/user/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.user.v1";
+
+// 用户服务
+service User {
+  // 创建用户
+  rpc CreateUser(CreateUserRequest) returns (CreateUserReply) {
+    option (google.api.http) = {
+      post : "/v1/user"
+      body : "*"
+    };
+  }
+
+  // 获取用户
+  rpc GetUser(GetUserRequest) returns (GetUserReply) {
+    option (google.api.http) = {
+      get : "/v1/user"
+    };
+  }
+}
+
+// 创建用户 请求
+message CreateUserRequest {
+  string user_name = 1;
+  string password = 2;
+}
+
+// 创建用户 响应
+message CreateUserReply {}
+
+// 获取用户 请求
+message GetUserRequest {
+  string user_name = 1;
+  string password = 2;
+}
+
+// 获取用户 响应
+message GetUserReply {
+  int64 user_id = 1;
+  string user_name = 2;
+}
