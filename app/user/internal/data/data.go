@@ -1,9 +1,11 @@
 package data
 
 import (
+	"database/sql"
 	"shopping/app/user/internal/conf"
 
 	"github.com/go-kratos/kratos/v2/log"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/wire"
 )
 
@@ -12,13 +14,22 @@ var ProviderSet = wire.NewSet(NewData, NewUserRepo)
 
 // Data .
 type Data struct {
-	// TODO wrapped database client
+	db *sql.DB
 }
 
 // NewData .
 func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
+	db, err := sql.Open(c.Database.Driver, c.Database.Source)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	cleanup := func() {
 		log.NewHelper(logger).Info("closing the data resources")
+		db.Close()
 	}
-	return &Data{}, cleanup, nil
+	d := &Data{
+		db: db,
+	}
+	return d, cleanup, nil
 }

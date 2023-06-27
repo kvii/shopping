@@ -24,6 +24,9 @@ service User {
       get : "/v1/user"
     };
   }
+
+  // 根据 id 获取用户
+  rpc GetUserById(GetUserByIdRequest) returns (GetUserByIdReply);
 }
 
 // 创建用户 请求
@@ -43,6 +46,15 @@ message GetUserRequest {
 
 // 获取用户 响应
 message GetUserReply {
+  int64 user_id = 1;
+  string user_name = 2;
+}
+
+// 根据 id 获取用户 参数
+message GetUserByIdRequest { int64 user_id = 1; }
+
+// 根据 id 获取用户 响应
+message GetUserByIdReply {
   int64 user_id = 1;
   string user_name = 2;
 }
