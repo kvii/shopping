@@ -24,6 +24,7 @@ func NewUserService(uc *biz.UserUseCase, logger log.Logger) *UserService {
 }
 
 func (s *UserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserReply, error) {
+	s.log.Infof("CreateUser req:%v", req)
 	u := &biz.UserInfo{
 		UserName: req.UserName,
 		Password: req.Password,

@@ -22,6 +22,7 @@ service Order {
   rpc ListOrderById(ListOrderByIdRequest) returns (ListOrderByIdReply) {
     option (google.api.http) = {
       get : "/v1/order"
+      body : "*"
     };
   }
 }

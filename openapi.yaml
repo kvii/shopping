@@ -3,32 +3,29 @@
 
 openapi: 3.0.3
 info:
-    title: User API
-    description: 用户服务
+    title: Order API
+    description: 订单服务
     version: 0.0.1
 paths:
-    /v1/user:
+    /v1/order:
         get:
             tags:
-                - User
-            description: 获取用户
-            operationId: User_GetUser
-            parameters:
-                - name: userName
-                  in: query
-                  schema:
-                    type: string
-                - name: password
-                  in: query
-                  schema:
-                    type: string
+                - Order
+            description: 获取用户 id 对应的订单
+            operationId: Order_ListOrderById
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ListOrderByIdRequest'
+                required: true
             responses:
                 "200":
                     description: OK
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/GetUserReply'
+                                $ref: '#/components/schemas/ListOrderByIdReply'
                 default:
                     description: Default error response
                     content:
@@ -37,14 +34,14 @@ paths:
                                 $ref: '#/components/schemas/Status'
         post:
             tags:
-                - User
-            description: 创建用户
-            operationId: User_CreateUser
+                - Order
+            description: 创建订单
+            operationId: Order_CreateOrder
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/CreateUserRequest'
+                            $ref: '#/components/schemas/CreateOrderRequest'
                 required: true
             responses:
                 "200":
@@ -52,7 +49,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CreateUserReply'
+                                $ref: '#/components/schemas/CreateOrderReply'
                 default:
                     description: Default error response
                     content:
@@ -61,27 +58,21 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
-        CreateUserReply:
+        CreateOrderReply:
             type: object
             properties: {}
-            description: 创建用户 响应
-        CreateUserRequest:
-            type: object
-            properties:
-                userName:
-                    type: string
-                password:
-                    type: string
-            description: 创建用户 请求
-        GetUserReply:
+            description: 创建订单 响应
+        CreateOrderRequest:
             type: object
             properties:
                 userId:
                     type: integer
+                    description: 用户 id
                     format: int64
-                userName:
+                orderName:
                     type: string
-            description: 获取用户 响应
+                    description: 订单名称
+            description: 创建订单 参数
         GoogleProtobufAny:
             type: object
             properties:
@@ -90,6 +81,32 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        ListOrderByIdReply:
+            type: object
+            properties:
+                orderList:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/OrderInfo'
+                    description: 订单列表
+            description: 获取用户 id 对应的订单 响应
+        ListOrderByIdRequest:
+            type: object
+            properties:
+                userId:
+                    type: integer
+                    format: int64
+            description: 获取用户 id 对应的订单 参数
+        OrderInfo:
+            type: object
+            properties:
+                orderId:
+                    type: integer
+                    description: 订单 id
+                    format: int64
+                orderName:
+                    type: string
+                    description: 订单名称
         Status:
             type: object
             properties:
@@ -107,4 +124,4 @@ components:
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
 tags:
-    - name: User
+    - name: Order

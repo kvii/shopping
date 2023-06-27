@@ -23,6 +23,7 @@ var ProviderSet = wire.NewSet(NewData, NewOrderRepo, NewUserServiceClient, NewDi
 // Data .
 type Data struct {
 	db *sql.DB
+	uc userv1.UserClient
 }
 
 // NewData .
@@ -38,6 +39,7 @@ func NewData(c *conf.Data, logger log.Logger, uc userv1.UserClient) (*Data, func
 	}
 	d := &Data{
 		db: db,
+		uc: uc,
 	}
 	return d, cleanup, nil
 }

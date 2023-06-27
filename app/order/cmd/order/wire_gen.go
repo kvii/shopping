@@ -32,7 +32,7 @@ func wireApp(confServer *conf.Server, registry *conf.Registry, confData *conf.Da
 	}
 	orderRepo := data.NewOrderRepo(dataData, logger)
 	orderUseCase := biz.NewOrderUseCase(orderRepo, logger)
-	orderService := service.NewOrderService(orderUseCase)
+	orderService := service.NewOrderService(orderUseCase, logger)
 	grpcServer := server.NewGRPCServer(confServer, orderService, logger)
 	httpServer := server.NewHTTPServer(confServer, orderService, logger)
 	registrar := server.NewRegistrar(registry)

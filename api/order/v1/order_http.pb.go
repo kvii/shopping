@@ -57,7 +57,7 @@ func _Order_CreateOrder0_HTTP_Handler(srv OrderHTTPServer) func(ctx http.Context
 func _Order_ListOrderById0_HTTP_Handler(srv OrderHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in ListOrderByIdRequest
-		if err := ctx.BindQuery(&in); err != nil {
+		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationOrderListOrderById)
@@ -102,10 +102,10 @@ func (c *OrderHTTPClientImpl) CreateOrder(ctx context.Context, in *CreateOrderRe
 func (c *OrderHTTPClientImpl) ListOrderById(ctx context.Context, in *ListOrderByIdRequest, opts ...http.CallOption) (*ListOrderByIdReply, error) {
 	var out ListOrderByIdReply
 	pattern := "/v1/order"
-	path := binding.EncodeURL(pattern, in, true)
+	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationOrderListOrderById))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	err := c.cc.Invoke(ctx, "GET", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

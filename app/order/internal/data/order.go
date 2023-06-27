@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 
+	v1 "shopping/api/user/v1"
 	"shopping/app/order/internal/biz"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -21,22 +22,40 @@ func NewOrderRepo(data *Data, logger log.Logger) biz.OrderRepo {
 	}
 }
 
-func (r *orderRepo) Save(ctx context.Context, g *biz.Greeter) (*biz.Greeter, error) {
-	return g, nil
+func (r *orderRepo) Create(ctx context.Context, o *biz.CreateOrder) (*struct{}, error) {
+	query := "INSERT INTO `order` (`user_id`, `name`) VALUES (?, ?)"
+	_, err := r.data.db.ExecContext(ctx, query, o.UserId, o.OrderName)
+	if err != nil {
+		r.log.Errorf("CreateOrder error: %v", err)
+		return nil, err
+	}
+	return &struct{}{}, nil
 }
 
-func (r *orderRepo) Update(ctx context.Context, g *biz.Greeter) (*biz.Greeter, error) {
-	return g, nil
-}
+func (r *orderRepo) ListById(ctx context.Context, id int) ([]biz.OrderInfo, error) {
+	_, err := r.data.uc.GetUserById(ctx, &v1.GetUserByIdRequest{UserId: int64(id)})
+	if err != nil {
+		r.log.Errorf("ListById user id error: %v", err)
+		return nil, err
+	}
 
-func (r *orderRepo) FindByID(context.Context, int64) (*biz.Greeter, error) {
-	return nil, nil
-}
+	query := "SELECT `id`, `name` FROM `order` WHERE `user_id` = ?"
 
-func (r *orderRepo) ListByHello(context.Context, string) ([]*biz.Greeter, error) {
-	return nil, nil
-}
+	rows, err := r.data.db.QueryContext(ctx, query, id)
+	if err != nil {
+		r.log.Errorf("ListById query error: %v", err)
+		return nil, err
+	}
 
-func (r *orderRepo) ListAll(context.Context) ([]*biz.Greeter, error) {
-	return nil, nil
+	var list []biz.OrderInfo
+	for rows.Next() {
+		var o biz.OrderInfo
+		err := rows.Scan(&o.OrderId, &o.OrderName)
+		if err != nil {
+			r.log.Errorf("ListById scan error: %v", err)
+			return nil, err
+		}
+		list = append(list, o)
+	}
+	return list, nil
 }
