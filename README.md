@@ -49,7 +49,7 @@ docker build -t <your-docker-image-name> .
 docker run --rm -p 8000:8000 -p 9000:9000 -v </path/to/your/configs>:/data/conf <your-docker-image-name>
 ```
 
-## 临时使用
+## 调用示例
 
 ```sh
 curl http://localhost:8000/v1/user -X POST -d '{"user_name":"a","password":"a"}' -H "Content-Type: application/json"
@@ -58,3 +58,7 @@ curl http://localhost:8001/v1/order -X POST -d '{"user_id":1,"order_name":"o"}' 
 
 curl http://localhost:8001/v1/order -X GET -d '{"user_id":1}' -H "Content-Type: application/json"
 ```
+
+## 打包方式
+
+运行 `make images` 即可。
